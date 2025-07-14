@@ -1,44 +1,48 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+
 class GeminiConfig {
-  // Chave da API Gemini (armazenada no .env)
+  // Chave da API
   static String get apiKey {
-    final key = dotenv.env['AIzaSyCQRkyEdgtfQtu5yQvIkdbHcwupAPU7ImM'];
+    final key = dotenv.env['GEMINI_API_KEY'];
     if (key == null || key.isEmpty) {
       throw Exception('GEMINI_API_KEY não encontrada no .env');
     }
     return key;
   }
 
-  // Modelo a ser utilizado
-  static const String model = 'gemini-pro';
+  // Atualize para o modelo correto (versão mais recente)
+  static const String model =
+      'gemini-1.5-pro'; // Ou 'gemini-1.0-pro' se preferir
 
   // Configurações de geração
-  static const generationConfig = {
-    'temperature': 0.9,
-    'topK': 40,
-    'topP': 0.95,
-    'maxOutputTokens': 1024,
-    'stopSequences': [],
-  };
+  static final generationConfig = GenerationConfig(
+    temperature: 0.9,
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 1024,
+    stopSequences: [],
+  );
 
   // Configurações de segurança
-  static const safetySettings = [
-    {
-      'category': 'HARM_CATEGORY_HARASSMENT',
-      'threshold': 'BLOCK_MEDIUM_AND_ABOVE'
-    },
-    {
-      'category': 'HARM_CATEGORY_HATE_SPEECH',
-      'threshold': 'BLOCK_MEDIUM_AND_ABOVE'
-    },
-    {
-      'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-      'threshold': 'BLOCK_MEDIUM_AND_ABOVE'
-    },
-    {
-      'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
-      'threshold': 'BLOCK_MEDIUM_AND_ABOVE'
-    },
+  static final safetySettings = [
+    SafetySetting(
+      HarmCategory.harassment,
+      HarmBlockThreshold.medium,
+    ),
+    SafetySetting(
+      HarmCategory.hateSpeech,
+      HarmBlockThreshold.medium,
+    ),
+    SafetySetting(
+      HarmCategory.sexuallyExplicit,
+      HarmBlockThreshold.medium,
+    ),
+    SafetySetting(
+      HarmCategory.dangerousContent,
+      HarmBlockThreshold.medium,
+    ),
   ];
 }

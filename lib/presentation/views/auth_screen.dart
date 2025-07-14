@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gemini_chatbot_web/core/widgets/custom_button.dart';
 import 'package:gemini_chatbot_web/presentation/views/chat_screen.dart';
+import 'package:gemini_chatbot_web/presentation/views/register_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -95,16 +96,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Logo Matrix
-                  Icon(
+                  const Icon(
                     Icons.code,
                     size: 100,
                     color: Colors.greenAccent,
                   ),
-
-                  // Efeito de texto caindo (Matrix style)
                   const SizedBox(height: 32),
                   ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
+                    shaderCallback: (bounds) => const LinearGradient(
                       colors: [Colors.greenAccent, Colors.green],
                       stops: [0.5, 1.0],
                     ).createShader(bounds),
@@ -129,7 +128,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       labelText: 'E-mail',
                       labelStyle:
                           TextStyle(color: Colors.greenAccent.withOpacity(0.7)),
-                      prefixIcon: Icon(Icons.email, color: Colors.greenAccent),
+                      prefixIcon:
+                          const Icon(Icons.email, color: Colors.greenAccent),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Colors.greenAccent.withOpacity(0.5)),
@@ -225,6 +225,24 @@ class _AuthScreenState extends State<AuthScreen> {
 
                   // Efeito de texto Matrix no rodapé
                   const SizedBox(height: 40),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const RegisterScreen()),
+                      );
+                    },
+                    child: const Text(
+                      'Ainda não tem conta? Cadastre-se',
+                      style: TextStyle(
+                        color: Colors.greenAccent,
+                        fontFamily: 'RobotoMono',
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+
                   const Text(
                     '01010101010101010101010101010101',
                     style: TextStyle(

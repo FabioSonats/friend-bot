@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gemini_chatbot_web/core/config/gemini_config.dart';
 import 'package:gemini_chatbot_web/presentation/widgets/chat_bubble.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:gemini_chatbot_web/core/config/gemini_config.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -102,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
-          'MATRIX CHAT',
+          'StrikerBotCHAT',
           style: TextStyle(
             color: Colors.greenAccent,
             fontFamily: 'RobotoMono',
