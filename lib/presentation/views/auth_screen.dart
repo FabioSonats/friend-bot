@@ -108,7 +108,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       stops: [0.5, 1.0],
                     ).createShader(bounds),
                     child: const Text(
-                      'STRIKERBOT CHAT',
+                      'STRIKER CHAT BOT',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,

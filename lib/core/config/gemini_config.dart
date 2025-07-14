@@ -15,7 +15,7 @@ class GeminiConfig {
 
   // Atualize para o modelo correto (versão mais recente)
   static const String model =
-      'gemini-1.5-pro'; // Ou 'gemini-1.0-pro' se preferir
+      'gemini-2.0-flash'; // Ou 'gemini-1.0-pro' se preferir
 
   // Configurações de geração
   static final generationConfig = GenerationConfig(
