@@ -1,10 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiConfig {
-  // Chave da API
   static String get apiKey {
     final key = dotenv.env['GEMINI_API_KEY'];
     if (key == null || key.isEmpty) {
@@ -13,7 +11,6 @@ class GeminiConfig {
     return key;
   }
 
-  // Atualize para o modelo correto (versão mais recente)
   static const String model =
       'gemini-2.0-flash'; // Ou 'gemini-1.0-pro' se preferir
 

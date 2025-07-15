@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gemini_chatbot_web/core/widgets/custom_button.dart';
 import 'package:gemini_chatbot_web/presentation/views/chat_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,10 +14,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
 
-  Future<void> _register() async {
+  Future<void> _registerUser() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -41,18 +42,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _errorMessage = _getErrorMessage(e.code);
       });
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   String _getErrorMessage(String code) {
     switch (code) {
       case 'email-already-in-use':
-        return 'Este e-mail já está em uso';
+        return 'E-mail já cadastrado';
       case 'invalid-email':
         return 'E-mail inválido';
+      case 'operation-not-allowed':
+        return 'Cadastro desativado';
       case 'weak-password':
-        return 'Senha fraca';
+        return 'Senha muito fraca';
       default:
         return 'Erro ao cadastrar';
     }
@@ -62,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -83,87 +87,123 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.app_registration,
-                      size: 100, color: Colors.greenAccent),
-                  const SizedBox(height: 32),
-                  ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Colors.greenAccent, Colors.green],
-                      stops: [0.5, 1.0],
-                    ).createShader(bounds),
-                    child: const Text(
-                      'CADASTRAR CONTA',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'RobotoMono',
-                        letterSpacing: 3,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _emailController,
-                    style: const TextStyle(color: Colors.greenAccent),
-                    decoration: _buildInputDecoration('E-mail', Icons.email),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Digite seu e-mail';
-                      }
-                      if (!value.contains('@')) {
-                        return 'E-mail inválido';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.greenAccent),
-                    decoration: _buildInputDecoration('Senha', Icons.lock),
-                    validator: (value) {
-                      if (value == null || value.length < 6) {
-                        return 'Mínimo 6 caracteres';
-                      }
-                      return null;
-                    },
-                  ),
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text(
-                        _errorMessage!,
-                        style: const TextStyle(
-                          color: Colors.redAccent,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const Icon(Icons.person_add,
+                        size: 100, color: Colors.greenAccent),
+                    const SizedBox(height: 32),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Colors.greenAccent, Colors.green],
+                      ).createShader(bounds),
+                      child: const Text(
+                        'Criar Conta',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'RobotoMono',
+                          color: Colors.white,
+                          letterSpacing: 5,
                         ),
                       ),
                     ),
-                  const SizedBox(height: 24),
-                  CustomMatrixButton(
-                    text: 'REGISTRAR',
-                    onPressed: _register,
-                    isLoading: _isLoading,
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      'Voltar ao login',
-                      style: TextStyle(
+                    const SizedBox(height: 40),
+
+                    // E-mail
+                    TextFormField(
+                      controller: _emailController,
+                      style: const TextStyle(color: Colors.greenAccent),
+                      decoration: _inputDecoration('E-mail', Icons.email),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty)
+                          return 'Informe seu e-mail';
+                        if (!value.contains('@')) return 'E-mail inválido';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Senha
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.greenAccent),
+                      decoration: _inputDecoration('Senha', Icons.lock),
+                      validator: (value) {
+                        if (value == null || value.length < 6) {
+                          return 'Senha deve ter pelo menos 6 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Confirmar Senha
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.greenAccent),
+                      decoration: _inputDecoration(
+                          'Confirmar Senha', Icons.lock_outline),
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Senhas não coincidem';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    if (_errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(
+                          _errorMessage!,
+                          style: TextStyle(
+                              color: Colors.red.shade300,
+                              fontFamily: 'RobotoMono'),
+                        ),
+                      ),
+
+                    const SizedBox(height: 24),
+
+                    // Botão cadastrar
+                    CustomMatrixButton(
+                      text: 'CADASTRAR',
+                      onPressed: _registerUser,
+                      isLoading: _isLoading,
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Link para login
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Já tem conta? Entrar',
+                        style: TextStyle(
                           color: Colors.greenAccent,
                           fontFamily: 'RobotoMono',
-                          decoration: TextDecoration.underline),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+
+                    const Text(
+                      '10101010101010101010101010',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 12,
+                        fontFamily: 'RobotoMono',
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -172,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  InputDecoration _buildInputDecoration(String label, IconData icon) {
+  InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(color: Colors.greenAccent.withOpacity(0.7)),
@@ -183,12 +223,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       focusedBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Colors.greenAccent),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       errorBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       focusedErrorBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
     );
   }

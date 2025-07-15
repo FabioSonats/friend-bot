@@ -4,7 +4,6 @@ import 'package:gemini_chatbot_web/presentation/widgets/chat_bubble.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -103,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
-          'StrikerBotCHAT',
+          'StrikerChatBOT',
           style: TextStyle(
             color: Colors.greenAccent,
             fontFamily: 'RobotoMono',
@@ -165,28 +164,30 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    style: const TextStyle(color: Colors.greenAccent),
-                    decoration: InputDecoration(
-                      hintText: 'Digite sua mensagem...',
-                      hintStyle:
-                          TextStyle(color: Colors.greenAccent.withOpacity(0.5)),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.greenAccent.withOpacity(0.5)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.greenAccent.withOpacity(0.5)),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.greenAccent),
-                      ),
+                    child: TextField(
+                  controller: _messageController,
+                  style: const TextStyle(color: Colors.greenAccent),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null, // permite linhas ilimitadas
+                  minLines: 1, // começa com uma linha
+                  decoration: InputDecoration(
+                    hintText: 'Digite sua mensagem...',
+                    hintStyle:
+                        TextStyle(color: Colors.greenAccent.withOpacity(0.5)),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.greenAccent.withOpacity(0.5)),
                     ),
-                    onSubmitted: (_) => _sendMessage(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.greenAccent.withOpacity(0.5)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.greenAccent),
+                    ),
                   ),
-                ),
+                  onSubmitted: (_) => _sendMessage(),
+                )),
                 IconButton(
                   icon: const Icon(Icons.send, color: Colors.greenAccent),
                   onPressed: _isLoading ? null : _sendMessage,
