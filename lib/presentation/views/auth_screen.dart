@@ -95,7 +95,6 @@ class _AuthScreenState extends State<AuthScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo Matrix
                   const Icon(
                     Icons.code,
                     size: 100,
@@ -108,7 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       stops: [0.5, 1.0],
                     ).createShader(bounds),
                     child: const Text(
-                      'STRIKER CHAT BOT',
+                      'StrikerBot Chat',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
