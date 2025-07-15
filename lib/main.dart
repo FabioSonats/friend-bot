@@ -42,7 +42,7 @@ class GeminiChatbotApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Gemini Chatbot',
+        title: 'StrikerBot Chat',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,
