@@ -11,8 +11,7 @@ class GeminiConfig {
     return key;
   }
 
-  static const String model =
-      'gemini-2.0-flash'; // Ou 'gemini-1.0-pro' se preferir
+  static const String model = 'gemini-2.0-flash';
 
   // Configurações de geração
   static final generationConfig = GenerationConfig(
