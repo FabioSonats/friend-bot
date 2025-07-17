@@ -1,7 +1,7 @@
 class FirebaseConfig {
-  // Configuração do Firebase para seu projeto web
+  // Configuração do Firebase para o projeto web
   static const Map<String, String> firebaseConfig = {
-    "apiKey": "AIzaSyBaPB8aDK9o67jk2rAuuSAa3jorhhqevDA",
+    "apiKey": "IA api deve vir aqui",
     "authDomain": "flutter-chat-bot-e867d.firebaseapp.com",
     "projectId": "flutter-chat-bot-e867d",
     "storageBucket": "flutter-chat-bot-e867d.appspot.com",
